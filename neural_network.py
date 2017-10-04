@@ -6,15 +6,21 @@ from keras.layers import Dense, Activation
 from matplotlib import pyplot as plt
 
 
-#########print the first element of images.py
+#########print the first element of images.npy
 img = np.load('images.npy')
-plt.imshow(img[0], cmap='gray')
+img.flatten()  ##flatten the matrix
+labels = np.load('labels.npy')
+print("Number is ",labels[60])
+plt.imshow(img[60])
 plt.show()
+
+########preprocessor variables (x_train, y_train ,etc)
+
 
 
 model = Sequential()
 
-#########Define input layer
+########Define input layer
 model.add(Dense(10, input_shape = (28*28, ), kernel_initializer='he_normal'))
 model.add(Activation('relu'))
 #
@@ -40,6 +46,5 @@ history = model.fit(x_train, y_train,
                     batch_size=512)
 
 #########Report Results
-
 print (history.history)
 model.predict()
