@@ -4,10 +4,9 @@ import numpy as np
 from keras.models import Sequential
 from keras.layers.core import Dense, Activation
 from keras.utils import np_utils
-import pandas as pd
 from matplotlib import pyplot as plt
 
-np.random.seed(117)
+np.random.seed(117) #seeding to improve consistency
 
 #########print the first element of images.npy
 img = np.load('images.npy')
@@ -22,31 +21,27 @@ print("Number is ",labels[6400])
 x_train = img_flat[0:4224] #65% for training
 x_val = img_flat[4225:5119] #15% for validation
 
-y_train = np_utils.to_categorical(labels[0:4224], 10)
+y_train = np_utils.to_categorical(labels[0:4224], 10) #change the fromat to arrays of 1's and 0's
 y_val = np_utils.to_categorical(labels[4225:5119], 10)
-
-# print ("y_train[0]", y_train[0])
-# print ("labels[0]", labels[0])
 
 ########Create Model
 model = Sequential()
 
 ########Define input layer
-model.add(Dense(50, input_shape = (28*28, ), kernel_initializer='he_normal'))
+model.add(Dense(50, input_shape = (28*28, ), kernel_initializer='random_uniform'))
 model.add(Activation('relu'))
 
 #######Hidden Layers
 model.add(Dense(50, kernel_initializer = 'he_normal'))
 model.add(Activation('relu'))
 
-
 model.add(Dense(50, kernel_initializer='he_normal'))
 model.add(Activation('relu'))
 
-model.add(Dense(60, kernel_initializer='he_normal'))
+model.add(Dense(60, kernel_initializer='random_uniform'))
 model.add(Activation('relu'))
 
-model.add(Dense(60, kernel_initializer='he_normal'))
+model.add(Dense(60, kernel_initializer='random_uniform'))
 model.add(Activation('relu'))
 
 
@@ -67,12 +62,27 @@ history = model.fit(x_train, y_train,
 
 #########Report Results
 print (history.history)
-prediction = model.predict(img_flat[6400:6499])#, batch_size=10, verbose=1)
-actual = labels[6400:6499]
+prediction = model.predict(img_flat[5120:6499], verbose = 1)
+actual = labels[5120:6499]
 
 ########Print results
+prediction_nums = []
 for result in range(len(prediction)):
     for num in range(len(prediction[result])):
         if prediction[result][num] == max(prediction[result]):
-            print ("Actual :", actual[result], end="")
-            print ("  Prediction :", num)
+            print ("Actual :", actual[result], "-->", end=" ")
+            print ("Prediction :", num, "-->", end=" ")
+            if (num == actual[result]):
+                print ("True")
+            else:
+                print("False")
+            prediction_nums.append(num)
+
+
+#######Visualize three //omissclassified images
+count = 1
+for miss in range(len(prediction_nums)):
+    if prediction_nums[miss] != actual[miss] and count <= 3:
+        count += 1
+        plt.imshow(img[5120 + miss], cmap='gray')
+        plt.show()
