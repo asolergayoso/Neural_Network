@@ -13,9 +13,6 @@ img = np.load('images.npy')
 img_flat = img.reshape(6500, 784)  # flatten matrix
 labels = np.load('labels.npy')
 labels_flat = labels.reshape(6500 ,1)
-print("Number is ",labels[6400])
-#plt.imshow(img[6400])
-#plt.show()
 
 ########preprocessor variables (x_train, y_train ,etc)
 x_train = img_flat[0:4224] #65% for training
