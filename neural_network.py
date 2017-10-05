@@ -13,21 +13,18 @@ img = np.load('images.npy')
 img_flat = img.reshape(6500, 784)  # flatten matrix
 labels = np.load('labels.npy')
 labels_flat = labels.reshape(6500 ,1)
-print("Number is ",labels[6400])
-#plt.imshow(img[6400])
-#plt.show()
 
 ########preprocessor variables (x_train, y_train ,etc)
-x_train = img_flat[0:4224] #65% for training
-x_val = img_flat[4225:5119] #15% for validation
+x_train = img_flat[0:3899] #60% for training
+x_val = img_flat[3900:4874] #15% for validation
 
-y_train = np_utils.to_categorical(labels[0:4224], 10) #change the fromat to arrays of 1's and 0's
-y_val = np_utils.to_categorical(labels[4225:5119], 10)
+y_train = np_utils.to_categorical(labels[0:3899], 10) #change the fromat to arrays of 1's and 0's
+y_val = np_utils.to_categorical(labels[3900:4874], 10)
 
 ########Create Model
 model = Sequential()
 
-########Define input layer
+########Define input layer and second layer
 model.add(Dense(50, input_shape = (28*28, ), kernel_initializer='random_uniform'))
 model.add(Activation('relu'))
 
@@ -43,7 +40,6 @@ model.add(Activation('relu'))
 
 model.add(Dense(60, kernel_initializer='random_uniform'))
 model.add(Activation('relu'))
-
 
 #########Define last layer
 model.add(Dense(10, kernel_initializer='he_normal'))
@@ -62,8 +58,8 @@ history = model.fit(x_train, y_train,
 
 #########Report Results
 print (history.history)
-prediction = model.predict(img_flat[5120:6499], verbose = 1)
-actual = labels[5120:6499]
+prediction = model.predict(img_flat[4875:6499], verbose = 1)
+actual = labels[4875:6499]
 
 ########Print results
 prediction_nums = []
@@ -79,10 +75,10 @@ for result in range(len(prediction)):
             prediction_nums.append(num)
 
 
-#######Visualize three //omissclassified images
+#######Visualize three missclassified images
 count = 1
 for miss in range(len(prediction_nums)):
     if prediction_nums[miss] != actual[miss] and count <= 3:
         count += 1
-        plt.imshow(img[5120 + miss], cmap='gray')
+        plt.imshow(img[4875 + miss], cmap='gray')
         plt.show()
